@@ -1,0 +1,1872 @@
+﻿Exercise No:                  IT18713  Cloud Computing Laboratory                               Date:
+
+
+Creating and Invoking Calculator Web Services in Server Side
+	
+
+AIM:
+        To create and invoke a calculator web service on the server side.
+
+
+PROCEDURE:
+1. Open Netbeans 6.5
+2. Click File -> New Project
+  
+
+3. Give project name as calcwsapplication and click next.
+4. In new web application dialog box, ensure that glassfish v2 server and Java EE 5 are selected and click next and then finish  
+5. Right click calcwsapplication and select New -> web service
+  
+
+   6. Give web service name as calwebservice and package name as calculator
+   7. click Finish
+   8. Expand web service folder.Right click calwebservice and click Add Operation
+
+
+  
+
+   9. Give operation name as add and return type as int
+   10. Click add button and give parameter as a and data type as int
+   11. Again Click add button and give parameter name as b and its data type as b
+   12. Click OK
+  
+
+
+
+   13. Instead of return 0, change it as return a+b
+  
+
+   14. Similarly, add operations for subtraction(sub), multiplication(mul),division(div)
+   15. Right Click calwsapplication and click clean and build.It will show BUILD SUCCESSFUL.
+   16. Again right Click calwsapplication and click deploy.It will show BUILD SUCCESSFUL.
+  
+
+   17. Select calwsapplication -> web services -> calculatorws.Right click and select Test Web Service
+   18. Give input values and click add button to check output  
+  
+
+  
+
+RESULT:
+        Creation of calculator web service done successfully on the server side.
+Creating and Invoking Calculator Web Services in Client Side
+	
+
+AIM:
+        To create and invoke a calculator web service on the client side.
+
+
+PROCEDURE:
+      1. Click File -> New Project.Select web application from java web category
+      2. Give file name as calcwsclient.click next and then finish.
+      3. Right Click calcwsclient and Select New -> web service client
+          
+      4. Select Project and click browse. Browse the web service. Ensure that client style is JAX-WS style.    
+
+
+         5. Click Finish. Code will appear and it will show some errors.
+         6. Click on error.At end of line add: xendorsed="true" and save it.
+         7. Right Click calcwsclient -> web pages and select new -> JSP  
+         8. Give file name as client and click finish.
+         9. In client.jsp page, inside the body tag,remove h1 tag and drag and drop the add operation from web_service_references from calcwsclient
+  
+
+            10. In the code appeared, change the values.(For instance, a=5,b=13)
+            11. Right Click calcwsclient and click Clean and build
+            12. Again Right click calcwsclient and click deploy.It will show BUILD SUCCESSFUL.
+            13. Right Client Client.jsp and click Run file
+            14. It will show the output as follows:  
+            15. Similarly create jsp files for subtraction, multiplication and division.Subtraction:
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RESULT:
+        Creation of calculator web service done successfully on the client side.
+Cloud Sim- Running Cloudlet by Creating Datacenter with one Host and Network Topology
+	
+
+AIM:
+        To simulate a cloud environment using cloud sim and create a datacenter with one host and network topology.
+
+
+PROCEDURE:
+               1. Open File > Newproject > JavaFX application.
+  
+
+               2. Add external jar folders inside JavaFxApplication > Libraries.
+  
+
+               3. Cloud Simulation using Cloud sim to run one virtual machine.
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedList;import java.util.List;
+import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterBroker;
+import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.Pe;
+import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.UtilizationModel;
+import org.cloudbus.cloudsim.UtilizationModelFull;
+import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+public class CloudSimExample1 {
+        private static List<Cloudlet> cloudletList;
+        private static List<Vm> vmlist;
+        @SuppressWarnings("unused")
+        public static void main(String[] args) {
+                Log.printLine("Starting CloudSimExample1...");
+                try {
+                        int num_user = 1; // number of cloud users
+                        Calendar calendar = Calendar.getInstance();
+                        boolean trace_flag = false; // mean trace events
+                        CloudSim.init(num_user, calendar, trace_flag);
+                        Datacenter datacenter0 = createDatacenter("Datacenter_0");
+                        DatacenterBroker broker = createBroker();
+                        int brokerId = broker.getId();
+                        vmlist = new ArrayList<Vm>();
+                        int vmid = 0;
+                        int mips = 1000;
+                        long size = 10000; // image size (MB)
+                        int ram = 512; // vm memory (MB)
+                        long bw = 1000;
+                        int pesNumber = 1; // number of cpus
+                        String vmm = "Xen"; // VMM name
+                        Vm vm = new Vm(vmid, brokerId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerTimeShared());
+                        vmlist.add(vm);
+                        broker.submitVmList(vmlist);
+                        cloudletList = new ArrayList<Cloudlet>();
+                        int id = 0;long length = 400000;long fileSize = 300;long outputSize = 300;
+                        UtilizationModel utilizationModel = new UtilizationModelFull();
+                        Cloudlet cloudlet = new Cloudlet(id, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+                        cloudlet.setUserId(brokerId);
+                        cloudlet.setVmId(vmid);
+                        cloudletList.add(cloudlet);
+                        broker.submitCloudletList(cloudletList);
+                        CloudSim.startSimulation();
+                        CloudSim.stopSimulation();
+                        List<Cloudlet> newList = broker.getCloudletReceivedList();
+                        printCloudletList(newList);
+                        Log.printLine("CloudSimExample1 finished!");
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.printLine("Unwanted errors happen");
+                }
+        }
+        private static Datacenter createDatacenter(String name) {
+                List<Host> hostList = new ArrayList<Host>();
+                List<Pe> peList = new ArrayList<Pe>();
+                int mips = 1000;
+                peList.add(new Pe(0, new PeProvisionerSimple(mips))); int hostId = 0;
+                int ram = 2048; // host memory (MB)
+                long storage = 1000000; // host storage
+                int bw = 10000;
+                hostList.add(
+                        new Host(
+                                hostId,
+                                new RamProvisionerSimple(ram),
+                                new BwProvisionerSimple(bw),
+                                storage,
+                                peList,
+                                new VmSchedulerTimeShared(peList)
+                        )
+                );String arch = "x86";                 
+                        String os = "Linux"; 
+                String vmm = "Xen";
+                double time_zone = 10.0;                 
+                        double cost = 3.0; // the cost of using processing in this resource
+                double costPerMem = 0.05;
+                double costPerStorage = 0.001; 
+                double costPerBw = 0.0;
+                LinkedList<Storage> storageList = new LinkedList<Storage>(); 
+                DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
+                                arch, os, vmm, hostList, time_zone, cost, costPerMem,
+                                costPerStorage, costPerBw);
+                Datacenter datacenter = null;
+                try {
+                        datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+                return datacenter;}
+        private static DatacenterBroker createBroker() {
+                DatacenterBroker broker = null;
+                try {
+                        broker = new DatacenterBroker("Broker");
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                }
+                return broker;}
+        private static void printCloudletList(List<Cloudlet> list) {
+                int size = list.size();
+                Cloudlet cloudlet;
+                String indent = "    ";
+                Log.printLine();
+                Log.printLine("========== OUTPUT ==========");
+                Log.printLine("Cloudlet ID" + indent + "STATUS" + indent
+                                + "Data center ID" + indent + "VM ID" + indent + "Time" + indent
+                                + "Start Time" + indent + "Finish Time");
+                DecimalFormat dft = new DecimalFormat("###.##");
+                for (int i = 0; i < size; i++) {
+                        cloudlet = list.get(i);
+                        Log.print(indent + cloudlet.getCloudletId() + indent + indent);
+                        if (cloudlet.getCloudletStatus() == Cloudlet.SUCCESS) {
+                                Log.print("SUCCESS");
+                                Log.printLine(indent + indent + cloudlet.getResourceId()
+                                                + indent + indent + indent + cloudlet.getVmId()
+                                                + indent + indent
+                                                + dft.format(cloudlet.getActualCPUTime()) +indent
+                                                + indent + dft.format(cloudlet.getExecStartTime())
+                                                + indent + indent
+                                                + dft.format(cloudlet.getFinishTime()));
+                        }                }        }}
+
+
+
+
+OUTPUT:
+ant -f C:\\Users\\Administrator\\Documents\\NetBeansProjects\\CloudSim2 -Djavac.includes=org/cloudbus/cloudsim/examples/CloudSimExample1.java -Dnb.internal.action.name=run.single -Drun.class=org.cloudbus.cloudsim.examples.CloudSimExample1 run-single
+init:
+Deleting: C:\Users\Administrator\Documents\NetBeansProjects\CloudSim2\build\built-jar.properties
+deps-jar:
+Updating property file: C:\Users\Administrator\Documents\NetBeansProjects\CloudSim2\build\built-jar.properties
+Compiling 1 source file to C:\Users\Administrator\Documents\NetBeansProjects\CloudSim2\build\classes
+compile-single:
+run-single:
+Starting CloudSimExample1...
+Initialising...
+Starting CloudSim version 3.0
+Datacenter_0 is starting...
+Broker is starting...
+Entities started.
+0.0: Broker: Cloud Resource List received with 1 resource(s)
+0.1: Broker: Sending cloudlet 0 to VM #0
+400.1: Broker: Cloudlet 0 received
+400.1: Broker: All Cloudlets executed. Finishing...
+400.1: Broker: Destroying VM #0
+Broker is shutting down...
+Simulation: No more future events
+CloudInformationService: Notify all CloudSim entities for shutting down.
+Datacenter_0 is shutting down...
+Broker is shutting down...
+Simulation completed.
+Simulation completed.
+
+
+========== OUTPUT ==========
+Cloudlet ID    STATUS    Data center ID    VM ID    Time    Start Time    Finish Time
+    0        SUCCESS        2            0        400        0.1        400.1
+CloudSimExample1 finished!
+BUILD SUCCESSFUL (total time: 0 seconds)
+
+
+
+
+
+
+
+
+
+
+
+
+RESULT:
+        Creation of Datacenter with one and network topology to simulate one virtual machine done successfully.
+Installation of Eucalyptus
+	
+
+AIM:
+        To install the eucalyptus tool.
+
+
+PROCEDURE:
+               1. Open VMWare player.
+               2. Click create a new virtual machine.
+               3. Select the radio button “I will install os later” and click next.
+
+
+  
+
+               4. Select linux and click next and change the version to CentOS 64-bit
+  
+
+
+
+               5. Give a name (for instance vos1) and click next
+               6. Give a size as 200 and select the store virtual disk as a single file and click next.
+  
+
+               7. Click customize hardware.
+               8. Click memory in left panel, and make size as 3072MB
+  
+
+
+
+               9. Click the processor in the left panel and select the number of processors as 2.
+               10. Enable virtualize Intel VT-x/EPT or AMD-V/RVI
+  
+
+               11. Click NEW CD in left panel
+               12. Click use ISO image file and browse faststart.iso in the cloud folder.
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               13. Click network adapter in left panel
+               14. Enable NAT
+               15. Click printer in left panel and click remove
+  
+
+               16. Click close and follow the finish button.
+               17. Click play virtual machine
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               18. Select install centOS 6 with eucalyptus cloud-in-box using the up arrow key and press enter.
+  
+
+               19. Click skip for media test. The console will appear as follows.
+  
+
+
+
+               20. Click next. Select English and click next. Select US English and click next.
+               21. Click “yes, discard any data”.
+  
+
+               22. Give the following information:
+hostname: root network
+interface:eth0 (no change)
+Mode: static (no change) 
+IP address:IP of idle computer (192.168.18.45)
+Net mask: 255.255.254.0 
+Default gateway:192.168.18.1 
+DNS server list:192.168.18.2
+  
+
+               23. Click next and select Asia/Kolkata
+  
+
+               24. Click next and root password as 123456 and confirm the same.
+               25. Click use anyway for the prompt to appear.
+               26. Give public IP range list: 192.168.18.45-192.168.18.50 and click Next
+               27. Select Replace Existing Linux and click Next.
+               28. Click write changes to disk.
+
+
+
+
+
+
+  
+
+               29. Scroll and click forward and again click forward.
+               30. Give the following credentials:
+User:
+user name: user 
+Full name: user 
+Password: 123456 
+Confirm: 123456 
+Click Forward and click yes in the prompt and again click forward. NTP will be starting
+               31. Note down the user and admin credentials 
+For instance, 
+User Console 
+URL(for managing instances,volumes,etc): 
+https://192.168.18.45:8888/ 
+User credentials: 
+Account : demo 
+User name: admin 
+password: password 
+Admin Console URL(for managing user accounts,VM types,etc) https://192.168.18.45:8443/ 
+Admin Credentials:
+Account: eucalyptus 
+User name: admin 
+Password: admin
+               32. Click Finish.
+  
+
+
+
+               33. Click the user and get logged in using password 123456.
+  
+
+               34. The desktop with Eucalyptus web admin and Eucalyptus user console is displayed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RESULT:
+        Thus, the Eucalyptus tool is installed.
+Running Virtual Machine of Different Configuration
+	
+
+AIM:
+        To run the virtual machine using different configurations.
+
+
+PROCEDURE:
+After installing eucalyptus tool, do the following steps in the appeared console:
+
+
+               1. Click user and get logged in using password 123456
+               2. Click the Eucalyptus web admin icon and open it. Click “I understand the risk” → click Add Exception → Click confirm security Exception
+
+
+  
+
+               3. Give admin credentials. It prompts for new password. For instance,let new password be admin1
+               4. Select account.
+  
+
+               5. Click New Account
+  
+
+               6. give credentials.For instance, account name: cloud1, password: admin1
+               7. Click OK.The list of accounts will be displayed 
+               8. Minimize and Select Eucalyptus user console in desktop 
+               9. Click “I understand the risk” → click Add Exception → Click confirm security Exception 
+               10. Log in as cloud1 using username admin and password admin1
+
+
+  
+
+               11. Dashboard will be displayed 
+               12. Select instances from the Instance tab. Manage instances page showing list of instances will be displayed
+               13. Click Launch new Instance
+               14. Select Image and Click Next:select type button
+  
+
+
+
+               15. . Give following values: Number of instances: 1 (no change)
+Instance name : instance1 (for instance) Instance size: m1:small: 1 CPUs, 256 memory (MB),5 disk (GB,root device) (no change)
+  
+
+               16.  Click Next:Security
+               17. Click Create new pair
+  
+
+               18. Give name, for instance, zxc
+  
+
+               19. Click create and download
+               20. Save file and click OK
+  
+
+               21.  Click Create new Security group and give gr as group name,for instance. Also give description and click create group
+  
+
+               22. Click Launch instance
+               23. After a few seconds, instances along with its status will be displayed. Initially the status will be pending and after a few seconds the instance will attain running state.
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+RESULT:
+        Thus, virtual machines are made to run using different configurations.
+Attaching Virtual Block to the Virtual Machine
+	
+
+AIM:
+        To attach virtual block to the virtual machine and to check whether it holds the data even
+after the release of the virtual machine.
+
+
+PROCEDURE:
+After the instance is running, do the following steps:
+  
+
+               1. Note down the public ip
+  
+
+
+
+               2. Click Application menu → system tools → terminal
+  
+
+
+
+               3. Type the following sequence:
+  
+
+               4. Minimize the terminal and Click Storage tab in dashboard and then click volume
+               5. Click create new volume
+               6. Give size name and size as extr1(for example) and 1 GB
+  
+
+               7. Click create new volume
+               8. It will appear in dashboard
+  
+
+               9. Select the extra volume
+               10. Click More Actions → Attach instance
+               11. Give the id of instance to which the extra volume is attached
+               12. Click Attach
+  
+
+               13. If attached to instance tab is expanded, it shows the status of attachment as below:
+  
+
+               14. Verify it using Terminal (command: lsblk)
+  
+
+RESULT:
+        Thus, virtual block is attached to the virtual machine and it is checked that it holds the data even after the release of the virtual machine.
+Hadoop Single Node Cluster
+	
+
+AIM:
+        Single node Hadoop Installation and to set up one node hadoop cluster.
+
+
+PROCEDURE:
+0. Update the OS 
+sudo apt-get update
+
+
+1. Install openssh server
+        sudo apt-get install openssh-server
+
+
+2. Create the new group
+sudo addgroup <groupname> 
+eg: <groupname> cluster1
+
+
+3. Create the new user in newly created group
+        sudo adduser --ingroup <groupname> <username> 
+eg: <username>hadoop1
+
+
+4. Login to newly created user. 
+
+
+5. Generate the SSH key
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa 
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ssh localhost
+
+
+6. Unzip the JDK and Hadoop files
+        tar -xzf jdk-8u45-linux-x64.tar.gz 
+tar -xzf hadoop-2.5.1.tar.gz
+
+
+7. Open the ‘bashrc’ file 
+nano .bashrc
+
+
+8. Type the following command in the ‘bashrc’ file bottom. 
+export JAVA_HOME=jdk1.8.0_05 
+export HADOOP_HOME=hadoop-2.5.1 
+export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP/sbin
+export PATH
+
+
+9. Execute the ‘bashrc’ file 
+exec bash 
+source .bashrc 
+hadoop version
+
+
+10. Open the ‘hadoop-env.sh’ file and add java home directory or java folder path 
+gedit hadoop-env.sh 
+export JAVA HOME=~/jdk1.8.0_05
+
+
+11. Copy and Paste the following file to hadoop folder-->etc-->hadoop
+gedit core-site. xml
+<configuration> 
+<property>
+ <name>fs.default.name</name> 
+<value> hdfs://localhost:9000</value>
+</property>
+ </configuration>
+
+
+gedit mapred-site.xml
+<configuration>
+<property>
+<name> mapreduce. framework.name</name> <value>yarn</value> </property>
+<property> <name>mapreduce.job.tracker</name> <value> localhost:54311</value> </property>
+<property> <name>mapreduce.tasktracker.map.tasks.maximum</name> <value>4</value> </property>
+<property> <name>mapreduce.map.tasks</name> <value>4</value> </property>
+</configuration>
+
+
+        gedit hdfs-site.xml // to edit the username in this file
+<configuration>
+<property> <name>dfs replication</name> <value>3</value> </property>
+<property> <name> dfs.namenode.name.dir</name> <value>file:/home/svce/hdfs/namenode</value> </property>
+<property> <name>dfs.datanode.data.dir</name> <value> file:/home/svce/hdfs/datanode</value> </property>
+</configuration>
+        
+        gedit Yarn-site.xml
+<configuration> <property> <name>yarn.nodemanager.aux-services</name> <value>
+mapreduce shuffle</value> </property> </configuration>
+
+
+
+
+
+
+
+
+
+
+
+
+12. Format the hadoop namenode 
+hadoop namenode –format
+
+
+13. Start the hadoop 
+hadoop-2.5.1/sbin/start-all.sh
+
+
+14. Check the nodes that are created or not
+ jps
+
+
+15. If any node is not created execute the below command and repeat step 12 & 13  hadoop-2.5.1/sbin/stop-all.sh 
+rm –r hdfs/
+
+
+Name Node not created: 
+1. sudo rm -rf /app/hadoop/tmp/ 
+2. sudo mkdir -p /app/hadoop/tmp 
+3. sudo chown svce /app/hadoop/tmp 
+4. sudo chmod 750 /app/hadoop/tmp 
+5. hadoop namenode –format 
+6. hadoop datanode -format
+
+
+16. Open the namenode and datanode. In browser type the following port number localhost:50070
+
+
+OUTPUT:
+NameNode:
+  
+
+
+
+RESULT:
+        Thus the hadoop single node cluster and one node hadoop cluster was installed successfully.
+Hadoop Commands
+	
+
+AIM:
+To execute the most essential and frequently used Hadoop HDFS commands to perform file operations.
+
+
+HADOOP HDFS COMMANDS:
+
+
+1. mkdir : This command is used to creates the directory in HDFS if it does not already exist.
+  
+
+2. ls: This command is used to enlist the files and directories present in HDFS.
+  
+
+
+
+3. copyFromLocal: This command is trying to copy the file present in the local file system to the directory of Hadoop HDFS.
+  
+
+
+
+4. copyToLocal: This command is trying to copy the file present in the directory of Hadoop HDFS to the local file system
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5. cat: This command to display the content of the file present in directory of HadoopHDFS.
+  
+
+
+
+6. cp: This command used to copying the file present from directory in HadoopHDFS to the directory of HadoopHDFS.
+  
+
+
+
+7. put: This command is used to copy files from the local file system to the HDFS filesystem. 
+  
+
+
+
+8. get: This command is used to copy files from HDFS file system to the local file system.
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RESULT:
+        Thus, the various most essential and frequently used Hadoop HDFS commands were executed.
+
+
+Executing GREP Example in Command Line
+	
+
+AIM:
+        To run the grep in command line
+
+
+PROCEDURE:
+1. Create a directory (say grepex) in /opt folder.
+
+
+hduser@itsslab01:/$ cd opt 
+hduser@itsslab01:/opt$ sudo mkdir gerpex
+
+
+2. Move to wcex folder. Create a text file say hadoop1.txt
+  
+
+
+
+hduser@itsslab01:/opt/grepex$ vi hadoop1.txt
+ Hello hadoop 
+bye world 
+bye hadoop
+
+
+  
+
+3. Move to hadoop folder. 
+hduser@itsslab01:/opt/gerpex$ cd .. 
+hduser@itsslab01:/opt/$ cd .. 
+hduser@itsslab01:$ cd /usr/local/hadoop-2.5.1 
+hduser@itsslab01: /usr/local/hadoop-2.5.1$
+
+
+4. Create a directory in hdfs using mkdir command. 
+hduser@itsslab01:/usr/local/hadoop-2.5.1$ bin/hdfs dfs -mkdir /grepexin hduser@itsslab01:/usr/local/hadoop-2.5.1$
+
+
+  
+
+
+
+5. Copy the text file from local file system to hdfs using put command. hduser@itsslab01:/usr/local/hadoop-2.5.1$ bin/hdfs dfs -put /opt/grepex/hadoop1.txt /grepexin hduser@itsslab01:/usr/local/hadoop-2.5.1$
+  
+
+
+
+
+
+
+
+Executing Wordcount Example In Command Line
+	
+
+AIM:
+         To run the wordcount example in the command line.
+
+
+PROCEDURE:
+
+
+1. Create a directory (say wcex) in /opt folder.
+hduser@itsslab01:/$ cd opt 
+hduser@itsslab01:/opt$ sudo mkdir wcex
+
+
+2. Move to wcex folder. Create a text file say hadoop.txt
+hduser@itsslab01:/opt/wcex$ vi hadoop.txt
+Hello hadoop 
+bye world 
+bye hadoop
+
+
+
+
+  
+
+
+
+3. Move to hadoop folder
+hduser@itsslab01:/opt/wcex$ cd .. 
+hduser@itsslab01:/opt/$ cd .. 
+hduser@itsslab01:$ cd /usr/local/hadoop-2.5.1 
+hduser@itsslab01: /usr/local/hadoop-2.5.1$
+
+
+4. Create a directory in hdfs using mkdir command
+hduser@itsslab01:/usr/local/hadoop-2.5.1$ bin/hdfs dfs -mkdir /wcexin hduser@itsslab01:/usr/local/hadoop-2.5.1$
+
+
+
+
+
+
+  
+
+
+
+5. Copy the text file from local file system to hdfs using put command.
+hduser@itsslab01:/usr/local/hadoop-2.5.1$ bin/hdfs dfs -put /opt/wcex/hadoop.txt /wcexin hduser@itsslab01:/usr/local/hadoop-2.5.1$
+  
+
+
+
+6. Execute the wordcount example.
+hduser@itsslab01:/usr/local/hadoop-2.5.1$ bin/hadoop jar share/hadoop/mapreduce/hadoopmapreduce-examples-2.5.1.jar wordcount /wcexin /wcexout
+
+
+  
+
+
+
+7. View the output.
+hduser@itsslab01:/usr/local/hadoop-2.5.1$ bin/hadoop jar share/hadoop/mapreduce/hadoopmapreduce-examples-2.5.1.jar wordcount /wcexin /wcexout
+
+
+16/09/27 09:34:36 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032 16/09/27 09:34:37 INFO input.FileInputFormat: Total input paths to process : 1 16/09/27 09:34:37 INFO mapreduce.JobSubmitter: number of splits:1 16/09/27 09:34:37 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1474947576177_0002 16/09/27 09:34:37 INFO impl.YarnClientImpl: Submitted application application_1474947576177_0002 16/09/27 09:34:37 INFO mapreduce.Job: The url to track the job: http://itsslab01:8088/proxy/application_1474947576177_0002/ 16/09/27 09:34:37 INFO mapreduce.Job: Running job: job_1474947576177_0002 16/09/27 09:34:43 INFO mapreduce.Job: Job job_1474947576177_0002 running in uber mode : false 16/09/27 09:34:43 INFO mapreduce.Job: map 0% reduce 0% 16/09/27 09:34:47 INFO mapreduce.Job: map 100% reduce 0% 16/09/27 09:34:52 INFO mapreduce.Job: map 100% reduce 100% 16/09/27 09:34:52 INFO mapreduce.Job: Job job_1474947576177_0002 completed successfully 16/09/27 09:34:52 INFO mapreduce.Job: Counters: 49 File System Counters
+
+
+File Output Format Counters Bytes Written=31 
+hduser@itsslab01:/usr/local/hadoop-2.5.1$
+  
+
+
+
+Go to browser and type http://localhost:50070
+  
+
+
+
+Select Utilities -> Browse the filesystem
+  
+
+
+
+
+
+
+
+________________
+
+
+Open the output directory wcexout.
+  
+
+Click part-00000
+
+
+  
+
+
+
+Click download and save file.
+  
+
+
+
+
+
+Open the downloaded file and view the output
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RESULT:
+         Thus the wordcount example has been executed in the command line successfully.
+Mount One Node Hadoop Cluster Using Fuse
+	
+
+AIM:
+        To mount the one node Hadoop cluster using FUSE.
+
+
+INTRODUCTION TO FUSE:
+FUSE is a mechanism to create a file-system in user space for non-privileged users. FUSE provides various file operation function such as
+
+
+  read 
+• open
+• write
+• access
+• unlink 
+• opendir 
+• mknod 
+• chmod 
+• chown 
+• truncate 
+• mkdir 
+
+
+1. Execute hdenv.sh file to set java_home and hadoop home.
+hduser@itsslab25:$/ source hdenv.sh
+  
+
+
+
+2. Check all the daemon processes run on the hadoop system.
+hduser@itsslab25:/usr/local/hadoop-2.5.1$ jps
+
+
+7519 Jps 
+7275 ResourceManager 
+7099 SecondaryNameNode 
+7408 NodeManager 
+6908 DataNode 
+6785 NameNode
+  
+
+3. Create a new text file hadoop2.txt
+hduser@itsslab25:/$ sudo gedit hadoop2.txt
+  
+
+  
+
+
+
+4. Access files/directories in HDFS(traditional way)
+To access files in HDFS we use following commands:
+hadoop fs -ls / 
+hadoop fs -cat /hadoop.txt
+hduser@itsslab25:/$ hadoop fs -ls
+
+
+  
+
+
+
+hduser@itsslab25:/$ hadoop fs -cat /hadoop2.txt
+  
+
+________________
+
+
+5. Access HDFS files/directories POSIX way
+Following are the steps to access HDFS files in POSIX way: 
+1) A mount point - create a directory that will be the access point of the HDFS hduser@itsslab25:/$ sudo mkdir -p /mnt/hdfs
+  
+
+6. Now, check the core-site.xml file to find the address and the port number to use in hadoopdfs-fuse command. The core-site.xml can be found in /usr/lib/hadoop/etc/hadoop directory. 
+hduser@itsslab25:/usr/local/hadoop-2.5.1/etc/hadoop$ sudo gedit core-site.xml
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+7. Now, mount the filesystem using FUSE to the mount point /mnt/hdfs 
+hduser@itsslab25:/$ sudo hadoop-fuse-dfs dfs://localhost:9000 /mnt/hdfs
+/data/jenkins/workspace/generic-package-ubuntu64-14-04/CDH5.8.0-Packaging-Hadoop2016-07-12_15-43-10/hadoop-2.6.0+cdh5.8.0+1601-1.cdh5.8.0.p0.93~trusty/hadoop-hdfsproject/hadoop-hdfs/src/main/native/fuse-dfs/fuse_options.c:164 Adding FUSE arg /mnt/hdfs
+  
+
+
+
+8. Once the above command is successful, go to the /mnt/hdfs directory on the Linux box, you will see that there are files and directory structure that resembles hadoop fs -ls / command above. Now, we can perform file related operations such as ls, cat etc on the files and directories present in this location.
+9.Move to mount directory /mnt/hdfs and execute ls command.
+hduser@itsslab25:/# cd /mnt/hdfs
+hduser@itsslab25:/mnt/hdfs# ls
+  
+
+10. Execute cat command.
+hduser@itsslab25:/mnt/hdfs# cat j1/hadoop.txt 
+hadoop fuse mount is working
+11. Unmount the filesystem
+hduser@itsslab25:/mnt/hdfs# sudo umount /mnt/hdfs
+RESULT:
+        Thus using fuse we can smoothly access files and directories of the Hadoop file system in the same way as we access the Unix/Linux files.
+
+
+Hadoop Streaming API
+	
+
+AIM:
+        To write a program to use the API of Hadoop to interact with it.
+
+
+PROCEDURE:
+
+
+1. Execute jps command and check whether all the deamon process are running on hadoopsystem
+
+
+hduser@itsslab23:/usr/local/hadoop-2.5.1$ jps 
+5537 DataNode 10426 Jps 
+5908 ResourceManager 
+6041 NodeManager 
+5414 NameNode 
+5732 SecondaryNameNode
+
+
+2. Open gedit and write the python code for mapper and reducer
+mapper.py 
+
+
+  
+
+________________
+
+
+reducer.py
+  
+
+3. Save the mapper.py and reducer.py programs in the location /home/hduser
+
+
+4. Running the python code on hadoop
+a) Create a directory using mkdir command. 
+hduser@itsslab23:/usr/local/hadoop-2.5.1$ bin/hdfs dfs -mkdir /dir3
+
+
+  
+
+b) Copy local example data to HDFS
+
+
+hduser@itsslab23:/usr/local/hadoop-2.5.1$ bin/hdfs dfs -put /home/itsslab/Desktop/WordCount.txt /dir3
+________________
+
+
+  
+
+
+
+c) Run the mapreduce job in the hadoop cluster
+hduser@itsslab23:/usr/local/hadoop-2.5.1$ bin/hadoop jar /home/itsslab/Downloads/hadoopstreaming-2.5.1.jar -file /home/hduser/mapper.py -mapper /home/hduser/mapper.py -file /home/hduser/reducer.py -reducer /home/hduser/reducer.py -input /dir3 -output /dir4
+  
+
+  
+
+  
+
+
+
+In general Hadoop will create one output file per reducer; in our case however it will only create a single file because the input files are very small.
+5. Go to browser and type http://localhost:50070. Select utilities-> Browse the file system
+  
+
+6. Open the output directory dir4 and click part-00000. Click download.
+  
+
+Open the file and view the output
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RESULT:
+        Thus Hadoop Streaming API is used to interact and pass data between our Map and Reduce code via STDIN and STDOUT.
+Displaying Student Details Using PIG
+	
+
+AIM:
+        To display the student details using PIG.
+
+
+DESCRIPTION:
+Apache Pig is a high-level platform for creating programs that run on Apache
+Hadoop. The language for this platform is called Pig Latin. Pig can execute its Hadoop jobs in
+MapReduce, Apache Tez, or Apache Spark. Pig Latin abstracts the programming from the
+JavaMapReduce idiom into a notation which makes MapReduce programming high level, similar
+to that of SQLfor relational database management systems.
+
+
+Apache Pig is a tool/platform for creating and executing Map Reduce program used
+with Hadoop. It is a tool/platform for analyzing large sets of data. Apache Pig is an abstraction
+over MapReduce.
+
+
+PROCEDURE:
+INSTALLATION OF PIG:
+1. Download Pig tar file.
+Command: wget http://www-us.apache.org/dist/pig/pig-0.16.0/pig-0.16.0.tar.gz
+
+
+2. Extract the tar file using tar command. In below tar command, x means extract an archive
+file, z means filter an archive through gzip, f means filename of an archive file.
+
+
+Command: tar -xzf pig-0.16.0.tar.gz
+
+
+(or) Go to /user/local file system and paste the pig tar files. Right click the tar file and extract it.
+
+
+  
+
+
+
+
+
+PIG WORKING:
+
+
+3.Open the second terminal in the path of /user/local location.
+Type the command sudogedit ~/.bashrc
+
+
+  
+
+Edit the “.bashrc” file to update the environment variables of Apache Pig. We are setting it
+so that we can access pig from any directory, we need not go to pig directory to execute pig
+commands. Also, if any other application is looking for Pig, it will get to know the path of
+Apache Pig from this file.
+
+
+Command: sudo gedit ~/.bashrc
+Add the following at the end of the file:
+
+
+# Set PIG_HOME
+export PIG_HOME=/usr/ local//pig-0.16.0
+export PATH=$PATH:/ /usr/ local/pig-0.16.0/bin
+export PIG_CLASSPATH=$HADOOP_CONF_DIR
+
+
+Also, make sure that hadoop path is also set.
+Run below command to make the changes get updated in same terminal.
+
+
+4. Type the command source ~/.bashrc
+
+
+________________
+
+
+  
+
+
+
+5.Check pig version. Thisisto test that Apache Pig got installed correctly.In case, you don’t get the Apache
+Pig version, you need to verify if you have followed the above steps correctly.
+Command: pig –version
+
+
+6.Check pig help to see all the pig command options.
+Command: pig -help
+  
+
+7.Run Pig to start the grunt shell. Grunt shell is used to run Pig Latin scripts.
+Command: pig -x local
+
+
+Execution modes in Apache Pig:
+•MapReduce Mode – This is the default mode, which requires access to a Hadoop
+cluster and HDFS installation. Since, this is a default mode, it is not necessary to
+specify -x flag ( you can execute pig OR pig -x mapreduce). The input and output in
+this mode are present on HDFS.
+•Local Mode – With access to a single machine, all files are installed and run using a
+local host and file system. Here the local mode is specified using ‘-x flag’ (pig -x
+local). The input and output in this mode are present on local file system.
+
+
+  
+
+
+
+8.Now the terminal continues as grunt>
+Type the command sh ls
+  
+
+
+
+Type the command sh -ls
+  
+
+9.Create a text file in /usr/local
+Student.txt
+The content in the text file should be delimited by ‘,’
+
+
+  
+
+
+
+10.Create another text file with extension .pig
+Sample.pig
+
+
+  
+
+
+
+11. Create a new directory in the first terminal in which we installed Hadoop
+bin/ hdfsdfs -mkdir /pig_final
+bin/ hdfsdfs -put /usr/local/student.txt /pig_final
+bin/ hdfsdfs -put /usr/local/sample.pig /pig_final
+  
+
+
+
+12.Exceute the command in grunt> terminal
+exec sample.pig
+
+
+  
+
+
+
+Type “quit” to exit from
+grunt>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RESULT:
+        The student details were displayed with the help of PIG successfully.
+
+
+Displaying Employee Details Using HIVE
+	
+
+AIM:
+        To display the employee details using Hive.
+
+
+DESCRIPTION:
+Apache Hive is a data warehouse infrastructure that facilitates querying and
+managing large data sets which resides in distributed storage system. It is built on
+top of Hadoop and developed by Facebook. Hive provides a way to query the data
+using a SQL-like query language called HiveQL(Hive query Language). Internally,
+a compiler translates HiveQL statements into MapReduce jobs, which are then
+submitted to Hadoop framework for execution.
+
+
+Difference between Hive and SQL
+
+
+Hive looks very much similar like traditional database with SQL access. However,
+because Hive is based on Hadoop and MapReduce operations, there are several key
+differences:
+As Hadoop is intended for long sequential scans and Hive is based on Hadoop, you
+would expect queries to have a very high latency. It means that Hive would not be
+appropriate for those applications that need very fast response times, as you can
+expect with a traditional RDBMS database.
+Finally, Hive is read-based and therefore not appropriate for transaction processing
+that typically involves a high percentage of write operations.
+
+
+PROCEDURE:
+INSTALLATION:
+1. Download Hive tar.
+Command: wget http://archive.apache.org/dist/hive/hive-2.1.0/apache-hive-
+2.1.0- bin.tar.gz
+
+
+2.Extract the tar file.
+Command: tar -xzf apache-hive-2.1.0-bin.tar.gz
+
+
+
+
+
+
+  
+
+
+
+2. Edit the “.bashrc” file to update the environment variables for user.
+Command: sudo gedit ~/.bashrc
+Add the following at the end of the file:
+
+
+# Set HIVE_HOME
+JAVA_HOME=/usr/local/jdk1.8.0_05
+HADOOP_PREFIX=/usr/local/hadoop-2.5.1
+PATH=$PATH:$JAVA_HOME/bin:$HADOOP_PREFIX/bin
+export JAVA_HOME HADOOP_PREFIX PATH
+export HADOOP_HOME=/usr/local/hadoop-2.5.1
+export HADOOP_CONF_DIR=/usr/local/hadoop-2.5.1/etc/hadoop
+export HADOOP_MAPRED_HOME=/usr/local/hadoop-2.5.1
+export HADOOP_COMMON_HOME=/usr/local/hadoop-2.5.1
+export HADOOP_HDFS_HOME=/usr/local/hadoop-2.5.1
+export HADOOP_YARN_HOME=/usr/local/hadoop-2.5.1
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib" #
+Set HIVE_HOME
+export HIVE_HOME=/usr/local/apache-hive-2.1.0-bin
+export PATH=$PATH:/usr/local/apache-hive-2.1.0-bin/bin
+________________
+
+
+  
+
+
+
+3. Run below command to make the changes work in same terminal.
+Command: source ~/.bashrc
+4. Check hive version
+
+
+hive –version
+5. Type schematool –initSchema –dbType derby
+Then give command mv metastore_db metastore_db.tmp
+Type schematool –initSchema –dbType derby
+Atlast give command hive
+After execution of hive command the hive terminal will be opened.
+
+
+  
+
+  
+
+
+
+6. Create a text file in the location of /usr/local/ and the text should contain data in table format.
+
+
+  
+
+
+
+7. Create a directory in dfs and move the local file to the dfs directory.
+  
+
+8. Now the terminal continues as hive>
+Type the command CREATE TABLE employee(id INT, Name STRING)Row format
+delimited Fields terminated by \t’;
+Then after creating table get the data from dfs directory so type LOAD DATA INPATH
+‘hdfs://localhost:9000/in_hive/data.txt’ INTO table employee;
+
+
+  
+
+9. Then give command select * from employee;
+This will display the data which we gave in the text file.
+
+
+  
+
+
+
+Type “quit” to exit from hive
+RESULT:
+        The employee details were displayed with help of HIVE successfully.
+Mapping Favorite Sports with Countries Using SPARK 
+	
+
+AIM:
+        To demonstrate the mapping of favorite sports with countries using spark.
+
+
+DESCRIPTION:
+Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in
+Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also
+supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing,
+MLlib for machine learning, GraphX for graph processing, and Spark Streaming.
+PROCEDURE:
+1. Extract “spark-2.4.4-bin-hadoop2.7.tgz” and save it in /usr/local/
+Create sports.txt and store it in /usr/local/ spark-2.4.4-bin-hadoop2.7/bin
+
+
+  
+
+1. Login as “root” user
+$ sudo su -
+
+
+2. Change directory to Hadoop Folder
+$ root@itsslab:cd /usr/local/hadoop-2.5.1
+
+
+3. Execute “jps” command and check whether all daemon process are running on Hadoop
+system.
+root@itsslab:/usr/local/hadoop-2.5.1$ jps
+
+
+________________
+
+
+  
+
+4. Create a directory in hdfs using mkdir command
+  
+
+$ root@itsslab:cd /usr/local/hadoop-2.5.1
+5. Execute “jps” command and check whether all daemon process are running on Hadoop
+system.
+root@itsslab:/usr/local/hadoop-2.5.1$ jps
+
+
+6. Create a directory in hdfs using mkdir command
+root@itsslab:/usr/local/hadoop-2.5.1$bin/hdfsdfs -mkdir /stream_in
+  
+
+
+
+7.Create a local file “sports.txt” in /usr/local/ spark-2.4.4-bin-hadoop2.7/bin to HDFS
+
+
+root@itsslab:/usr/local/hadoop-2.5.1$ bin/hdfsdfs -put /usr/local/ spark-2.4.4-bin-
+hadoop2.7/bin/sports.txt /stream_in
+8.Open the New Terminal and Login as “root” user
+$ sudo su -
+
+
+9.Change directory to spark-2.4.4-bin-hadoop2.7/bin folder
+$ root@itsslab:cd /usr/local/ spark-2.4.4-bin-hadoop2.7/bin
+10..Run spark-shell command
+$ root@itsslab:/usr/local/ spark-2.4.4-bin-hadoop2.7/bin$ ./spark-shell
+
+
+
+
+
+
+  
+
+
+
+11.Load the Text File in HDFS using “sc” instance
+scala> val map_first = sc.textFile("hdfs://localhost:9000/spark_in/sports.txt");
+  
+
+12.Split each line of the text with respect to tab(“\t”)
+  
+
+13. Map the above split with their respective occurrences.
+scala> val wordsplit = linesplit.map(line => (line(0),line(1)));
+  
+14. Count the value of above mapped value.
+scala> wordsplit.countByValue
+  
+
+RESULT:
+        Thus the demonstration of mapping the favorite sports with their countries is implemented using spark and executed successfully.
+WORD COUNT MAPREDUCE PROGRAM
+	
+
+AIM:
+        To implement wordcount program to demonstrate the use of mapandreduce tasks
+
+
+PROCEDURE:
+  
+
+
+
+  
+
+  
+
+
+
+  
+
+
+
+  
+
+  
+
+
+
+
+
+  
+
+  
+
+
+
+  
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+  
+
+  
+
+
+
+  
+
+  
+
+
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+
+RESULT:
+        Thus , the word count MapReduce program has been implemented successfully.
+Register No:  2127200801018                                                                             Page No:
