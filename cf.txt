@@ -1,0 +1,240 @@
+ex 2 Hiding and Extracting Image using the Hex Editor
+
+
+1. Create text file and an image file in a folder.
+2. Open the text file and the image file in HXD tool.
+3. Note the hex values of the text file.
+4. Note the hex values of image file,
+5. Open the command prompt and then copy the text file in an image using the following 
+command.
+ Copy /b path of image + path of text path of new image 
+6. Open the third file(text +image) merged file having the same hex value is obtained
+and scroll down to see the text hex value in bottom
+
+------------------------------------------------------------------------------
+
+ex 4 Create Raw Image Using DumpIt and Collect Email Evidences using Bulk Extractor
+
+1. Run DumpIt to create a raw image file for the target location.
+2. Install bulk_extractor 1.5.5
+3. The raw file created using DumpIt is used inside bulk extractor to extract all the details
+4. Tools > Run bulk_extractor. Select the raw file created
+5. Choose the output directory to store the extracted files
+6. Submit and run. Open the destination file to view the output.
+
+------------------------------------------------------------------------------
+
+ex 6 Live Forensics Case Investigation using Autopsy Tool
+
+
+1. Download Autopsy and install it on your PC. Click the new case option
+2. A new page will open. Enter the details in ‘Case Name’ and ‘Base Directory’ and choose 
+the location to save the report, example, Autoreport. Then, click on next to proceed to the next 
+step.
+3. Here in the next step, you have to enter the case number and Examiner details and click 
+on finish to proceed to the next step
+4. A new window will open. It will ask for a data source in Step 1. Select source type to add 
+& browse the file Path and click on NEXT option to proceed further.
+5. Configure ingest Modules. I have chosen all the modules as I am looking for complete 
+information on evidence device or disk or system etc. and click next to proceed further
+6. In Add Data Source, just click on Finish to generate the report of the device and you can 
+perform a complete investigation on the victim device or system or any other disk. It will process 
+the data source and add it to the local database.
+7. After Process completion, it will show the Forensic Investigation Report. Now click on 
+Devices Attached option, it will show the list of the attached device with the system. Now click 
+on EXIF Metadata (Exchangeable image file format for images, sound used by Digital Camera, 
+Smartphone and scanner), click on Installed Programs to see the entire installed programs in the 
+system, Click Operating System Information. It will show the entire operating system list, Now 
+Select Operating System User Account Option. It will Display the name of all the user Accounts, 
+Now click on Recent Documents Option, it will display the latest created or opened documents, 
+Click Web Bookmarks Option to see all the bookmarks by system users in different browsers, To 
+see web cookies, select web cookies option, To See Web Downloads, Click on Web Downloads 
+option, To check internet History, click on Web History Option, To see the history of internet 
+search, click on Web Search Option, To see the list of all email ids in the system, click on email 
+address
+
+------------------------------------------------------------------------------
+
+ex 3 Creating Image using Forensic Tools(FTK)
+
+
+DISK PARTITIONING:
+1. Open disk partitioning settings > storage > Disk management. Choose a drive.
+2. Give a size of about 512 MB and shrink the disk.
+3. New partition is created with 512MB of size.
+
+ACCESS DATA FTK IMAGER:
+1. Click file > create Disk Image
+2. Choose Logical Drive
+3. Choose the newly created disk.
+4. Add the Destination for the Image and choose “raw(dd”)
+5. Enter the evidence details
+6. Choose the destination folder of Image
+7. Finish and start the process. New Image successfully created in the destination folder
+
+------------------------------------------------------------------------------
+
+ex 5 Recover the Deleted Files Using Forensics Tools
+
+
+1. Create a File: create a malicious document. We will call this document "Malicious" 
+and create it with Notepad in Windows.
+2. Delete the File Right-click on the malicious file and select delete.Delete in the recycle bin 
+too.
+3. Create an Image
+Go to the menu at the top of the application and select:
+ File -> Create Image
+It will open a wizard that will walk you through the process of opening a 
+case and ask you for a case number, evidence number, examiner name, etc. 
+Finally, it will ask for a location of the physical drive you want to image, a 
+destination directory and a name for the image file. When you are done 
+with all these administrative tasks, FTK Imager will begin the process of 
+creating a forensically sound bit-by-bit image of your drive.
+4.Recover Deleted Files
+Once you have installed RecoverMyFiles, select the Start Recovery icon in 
+the upper left corner. It will ask you to select either Recover Files or Recover 
+Drive. Select Recover a Drive. It will then search and display all your drives 
+like that in the screenshot below. Since we are using a forensic image, select 
+Add Image button to the right. You will need to provide a path to your image 
+file created with FTK.
+
+------------------------------------------------------------------------------
+
+.sha256() - sha
+.md5() - md5
+
+import hashlib
+
+# Get user input
+message = input("Enter a message to hash: ")
+
+# Create a SHA-256 hash object
+sha256 = hashlib.sha256()
+
+# Update the hash object with the bytes of the user's input
+sha256.update(message.encode('utf-8'))
+
+# Get the hexadecimal representation of the hash
+digest = sha256.hexdigest()
+
+print("SHA-256 Message Digest:", digest)
+
+------------------------------------------------------------------------------
+
+
+import hashlib
+
+# Get user input
+message = input("Enter a message to hash: ")
+
+# Create an MD5 hash object
+md5 = hashlib.md5()
+
+# Update the hash object with the bytes of the user's input
+md5.update(message.encode('utf-8'))
+
+# Get the hexadecimal representation of the hash
+digest = md5.hexdigest()
+
+print("MD5 Message Digest:", digest)
+
+------------------------------------------------------------------------------
+
+import hashlib
+
+def spl(s):
+    for i in s:
+        if(s.isalpha()):
+            continue
+        elif(s.isdigit()):
+            continue
+        else:
+            return 1
+    return 0
+
+def menu():
+    choice=int(input("1)Sign up\n2)Login\nYour choice: "))
+    return choice
+
+def signup():
+    uname=str(input("Enter uname: "))
+    pwd=str(input("Enter pwd: "))
+    fcnt=0
+    fuc=0
+    fspl=0
+    fnum=0
+    flc=0
+    if(len(pwd)>=8):
+        fcnt=1
+    if (spl(pwd)==1):
+        fspl=1
+    for i in pwd:
+        if i.isdigit():
+            fnum=1
+        if i.isupper():
+            fuc=1
+        if i.islower():
+            flc=1
+    fsum=fcnt+fuc+flc+fspl+fnum
+    val=0
+    if(fsum==5):
+        val=1
+    txt_file=open("C:/Users/Administrator/Desktop/pwd.txt","a")
+    if(val==1):
+        my_bytes = memoryview(pwd.encode('utf-8')).tobytes()
+        sha256 = hashlib.sha256(my_bytes)
+        txt_file.write(uname+":"+sha256.hexdigest()+"\n")
+        print("Signup Success")
+    else:
+        print("Signup failed")
+    txt_file.close()
+    
+def login():
+    uname=str(input("Enter uname: "))
+    pwd=str(input("Enter pwd: "))
+    txt_file=open("C:/Users/Administrator/Desktop/pwd.txt","r")
+    a=txt_file.readlines()
+    my_bytes = memoryview(pwd.encode('utf-8')).tobytes()
+    fg=0
+    for i in a:
+        j=i.split(":")
+        if(hashlib.sha256(my_bytes).hexdigest() == j[1].strip() and uname==j[0].strip()):
+            fg=1
+            break
+    if(fg==1):
+        print("Login success")
+    else:
+        print("Login Failed")
+    txt_file.close()
+    
+if __name__ == "__main__":
+    ch=menu()
+    if(ch==1):
+        signup()
+    if(ch==2):
+        login()
+
+
+Kamalesh:99f2bdf9942653ab32d9dfa0b43c72c3fbbb9679450fd965c590c224897b848a
+Praveen:5b6c2463f0b47eed678f790e2ad8fb153d4ae0b1d0582c60472b6c031c39eda1
+
+---------------------------------------------------------------------------
+
+def str_hex():
+fname=str(input("Enter fname: "))
+fspace=fname.split(".")
+ext=fspace[1].strip()
+hexa = ext.encode("utf-8").hex()
+print(hexa)
+
+def hexa_str():
+hexa=str(input("Enter hexstring: "))
+byte_string = bytes.fromhex(hexa)
+result = byte_string.decode('utf-8')
+print(result)
+if name =="_main_":
+ch=int(input("1)String2Hex\n2)Hex2String\nYour choice:"))
+if(ch==1):
+str_hex()
+elif(ch==2):
+hexa_str()
